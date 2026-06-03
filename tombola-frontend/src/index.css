@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+:root {
+  --ink:       #0E0618;
+  --deep:      #1A0A2E;
+  --plum:      #2C1654;
+  --violet:    #4A2880;
+  --purple:    #7C3AED;
+  --lavender:  #C084FC;
+  --cream:     #F5E6FF;
+  --mist:      #9B72CC;
+  --gold:      #F4C430;
+  --error:     #F87171;
+  --success:   #4ADE80;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  background: var(--ink);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Auth layout ── */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2rem 1rem;
+}
+
+/* Background orbs */
+.auth-page::before,
+.auth-page::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.auth-page::before {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 70%);
+  top: -150px; left: -150px;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.auth-page::after {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(192,132,252,0.12) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+  animation: drift 10s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(30px, 20px); }
+}
+
+/* ── Card ── */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(26, 10, 46, 0.85);
+  border: 0.5px solid var(--violet);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.5s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Logo ── */
+.auth-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.auth-logo-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  animation: spin 20s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.auth-logo-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+.auth-logo-title span { color: var(--lavender); }
+
+.auth-logo-sub {
+  font-size: 0.78rem;
+  color: var(--mist);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── Heading ── */
+.auth-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 0.25rem;
+}
+.auth-subheading {
+  font-size: 0.88rem;
+  color: var(--mist);
+  margin-bottom: 1.75rem;
+}
+
+/* ── Fields ── */
+.field {
+  margin-bottom: 1.1rem;
+}
+.field label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin-bottom: 0.4rem;
+}
+.field-wrap {
+  position: relative;
+}
+.field-wrap .field-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--violet);
+  pointer-events: none;
+}
+.field input {
+  width: 100%;
+  padding: 0.75rem 0.9rem 0.75rem 2.5rem;
+  background: var(--plum);
+  border: 0.5px solid var(--violet);
+  border-radius: 10px;
+  color: var(--cream);
+  font-size: 0.95rem;
+  font-family: 'Crimson Pro', serif;
+  transition: border-color 0.2s, background 0.2s;
+  outline: none;
+}
+.field input:focus {
+  border-color: var(--purple);
+  background: rgba(74, 40, 128, 0.6);
+}
+.field input.error { border-color: var(--error); }
+.field input::placeholder { color: var(--violet); }
+
+.field-error {
+  font-size: 0.78rem;
+  color: var(--error);
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* ── Password strength ── */
+.strength-bar {
+  height: 3px;
+  background: var(--violet);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.strength-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
+/* ── Button ── */
+.btn-primary {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--purple);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover { background: #6d28d9; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* spinner inside button */
+.btn-spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* ── Divider ── */
+.divider {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--violet);
+  margin: 1.25rem 0;
+  position: relative;
+}
+.divider::before, .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 0.5px;
+  background: var(--violet);
+}
+.divider::before { left: 0; }
+.divider::after  { right: 0; }
+
+/* ── Link button ── */
+.btn-link {
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  border: 0.5px solid var(--violet);
+  border-radius: 10px;
+  color: var(--mist);
+  font-size: 0.88rem;
+  font-family: 'Crimson Pro', serif;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-link:hover { border-color: var(--lavender); color: var(--lavender); }
+
+/* ── Alert ── */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+  border: 0.5px solid;
+}
+.alert-error  { background: rgba(248,113,113,0.1); border-color: var(--error); color: var(--error); }
+.alert-success{ background: rgba(74,222,128,0.1); border-color: var(--success); color: var(--success); }
+
+/* ── Prizes strip ── */
+.prizes-strip {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid var(--violet);
+}
+.prize-item {
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--mist);
+  letter-spacing: 0.5px;
+}
+.prize-item span { display: block; font-size: 1.1rem; margin-bottom: 2px; }
+.prize-item strong { color: var(--lavender); font-weight: 400; }
+
+/* ── Dashboard placeholder ── */
+.dashboard-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+.dashboard-page h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  color: var(--lavender);
+}
+.dashboard-page p { color: var(--mist); font-size: 1.1rem; }
+.btn-logout {
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  border: 0.5px solid var(--violet);
+  border-radius: 8px;
+  color: var(--mist);
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  transition: border-color 0.2s;
+}
+.btn-logout:hover { border-color: var(--error); color: var(--error); }
