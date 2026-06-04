@@ -39,18 +39,6 @@ export default function Juego() {
         setCargando(false);
       }
     };
-
-    // Cuando WebSocket conecta, pedir el estado actual via HTTP
-useEffect(() => {
-  if (conectado && salaId) {
-    api.get(`/api/salas/${salaId}/estado`).then(({ data }) => {
-      setEstado(data.estado);
-      setNumerosSorteados(data.numerosSorteados || []);
-      setJugadores(data.jugadoresConectados);
-    }).catch(console.error);
-  }
-}, [conectado, salaId]);
-
     cargarSala();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salaId]);
@@ -89,7 +77,7 @@ useEffect(() => {
     setJugadores(data.totalJugadores);
   }, []);
 
-  const { conectado } = useWebSocket(salaId, onNumero, onEstado, onPremio, onJugador);
+  useWebSocket(salaId, onNumero, onEstado, onPremio, onJugador);
 
   const reclamarPremio = async (premio) => {
     if (!carton) return;
