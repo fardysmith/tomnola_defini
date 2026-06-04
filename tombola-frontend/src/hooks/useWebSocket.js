@@ -1,69 +1,59 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-/* eslint-disable react-hooks/exhaustive-deps */
 
-const WS_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const WS_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8080').replace(/\/$/, '');
 
 export function useWebSocket(salaId, onNumero, onEstado, onPremio, onJugador) {
   const clientRef = useRef(null);
   const [conectado, setConectado] = useState(false);
 
-  const conectar = useCallback(() => {
+  useEffect(() => {
+    if (!salaId) return;
+
     const token = localStorage.getItem('token');
 
     const client = new Client({
       webSocketFactory: () => new SockJS(`${WS_URL}/ws`),
       connectHeaders: { Authorization: `Bearer ${token}` },
       reconnectDelay: 5000,
-
       onConnect: () => {
         setConectado(true);
+        console.log('WebSocket conectado a sala', salaId);
 
-        // Suscribirse a números sorteados
         client.subscribe(`/topic/sala/${salaId}/numero`, (msg) => {
-          const data = JSON.parse(msg.body);
-          onNumero && onNumero(data);
+          onNumero && onNumero(JSON.parse(msg.body));
         });
-
-        // Suscribirse a cambios de estado
         client.subscribe(`/topic/sala/${salaId}/estado`, (msg) => {
-          const data = JSON.parse(msg.body);
-          onEstado && onEstado(data);
+          onEstado && onEstado(JSON.parse(msg.body));
         });
-
-        // Suscribirse a premios ganados
         client.subscribe(`/topic/sala/${salaId}/premios`, (msg) => {
-          const data = JSON.parse(msg.body);
-          onPremio && onPremio(data);
+          onPremio && onPremio(JSON.parse(msg.body));
         });
-
-        // Suscribirse a jugadores conectados
         client.subscribe(`/topic/sala/${salaId}/jugadores`, (msg) => {
-          const data = JSON.parse(msg.body);
-          onJugador && onJugador(data);
+          onJugador && onJugador(JSON.parse(msg.body));
         });
       },
-
-      onDisconnect: () => setConectado(false),
-      onStompError: (frame) => console.error('STOMP error:', frame),
+      onDisconnect: () => {
+        setConectado(false);
+        console.log('WebSocket desconectado');
+      },
+      onStompError: (frame) => {
+        console.error('STOMP error:', frame);
+      },
+      onWebSocketError: (error) => {
+        console.error('WebSocket error:', error);
+      }
     });
 
     client.activate();
     clientRef.current = client;
+
+    return () => {
+      client.deactivate();
+      clientRef.current = null;
+    };
   }, [salaId]);
 
-  const desconectar = useCallback(() => {
-    if (clientRef.current) {
-      clientRef.current.deactivate();
-      clientRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (salaId) conectar();
-    return () => desconectar();
-  }, [salaId, conectar, desconectar]);
-
-  return { conectado, desconectar };
+  return { conectado };
 }
