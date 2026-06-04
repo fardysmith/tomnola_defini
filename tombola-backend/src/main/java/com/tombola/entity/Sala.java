@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "salas")
@@ -48,7 +49,7 @@ public class Sala {
     private String numerosSorteados = "";
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch =           FetchType.LAZY)
+    @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Carton> cartones = new ArrayList<>();
 
