@@ -1,11 +1,11 @@
 package com.tombola.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "salas")
@@ -24,15 +24,19 @@ public class Sala {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private EstadoSala estado = EstadoSala.ESPERANDO;
 
     @Column(name = "max_jugadores")
+    @Builder.Default
     private int maxJugadores = 16;
 
     @Column(name = "tiempo_espera_segundos")
+    @Builder.Default
     private int tiempoEsperaSegundos = 60;
 
     @Column(name = "intervalo_sorteo_segundos")
+    @Builder.Default
     private int intervaloSorteoSegundos = 5;
 
     @Column(name = "created_at", updatable = false)
@@ -44,15 +48,10 @@ public class Sala {
     @Column(name = "fin_at")
     private LocalDateTime finAt;
 
-    // Números ya sorteados (guardados como CSV)
     @Column(name = "numeros_sorteados", length = 500)
     private String numerosSorteados = "";
 
     @JsonIgnore
-    @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Carton> cartones = new ArrayList<>();
-
     @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Carton> cartones = new ArrayList<>();
@@ -62,6 +61,7 @@ public class Sala {
         this.createdAt = LocalDateTime.now();
     }
 
+    @JsonIgnore
     public List<Integer> getNumerosSorteadosList() {
         if (numerosSorteados == null || numerosSorteados.isBlank()) return new ArrayList<>();
         List<Integer> lista = new ArrayList<>();
