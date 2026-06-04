@@ -11,8 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,29 +22,28 @@ public class SalaController {
     private final SalaService salaService;
     private final JuegoService juegoService;
 
-    // ── GET todas las salas activas ──
     @GetMapping("/activas")
     public ResponseEntity<List<Map<String, Object>>> getSalasActivas() {
         List<Map<String, Object>> salas = salaService.obtenerSalasActivas().stream()
-                .map(s -> Map.of(
-                        "id", s.getId(),
-                        "nombre", s.getNombre(),
-                        "codigo", s.getCodigo(),
-                        "estado", s.getEstado().name(),
-                        "maxJugadores", s.getMaxJugadores()
-                ))
+                .map(s -> {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("id", s.getId());
+                    m.put("nombre", s.getNombre());
+                    m.put("codigo", s.getCodigo());
+                    m.put("estado", s.getEstado().name());
+                    m.put("maxJugadores", s.getMaxJugadores());
+                    return m;
+                })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(salas);
     }
 
-    // ── GET todas las salas (admin) ──
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Sala>> getAllSalas() {
         return ResponseEntity.ok(salaService.obtenerTodasLasSalas());
     }
 
-    // ── POST crear sala (admin) ──
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Sala> crearSala(@RequestBody Map<String, Object> body) {
@@ -53,12 +51,10 @@ public class SalaController {
         int maxJugadores = (int) body.getOrDefault("maxJugadores", 16);
         int tiempoEspera = (int) body.getOrDefault("tiempoEsperaSegundos", 60);
         int intervaloSorteo = (int) body.getOrDefault("intervaloSorteoSegundos", 5);
-
         Sala sala = salaService.crearSala(nombre, maxJugadores, tiempoEspera, intervaloSorteo);
         return ResponseEntity.ok(sala);
     }
 
-    // ── POST unirse a sala por código ──
     @PostMapping("/unirse/{codigo}")
     public ResponseEntity<SalaDTO> unirsePorCodigo(
             @PathVariable String codigo,
@@ -68,7 +64,6 @@ public class SalaController {
         return ResponseEntity.ok(dto);
     }
 
-    // ── POST unirse a sala por ID ──
     @PostMapping("/{id}/unirse")
     public ResponseEntity<SalaDTO> unirsePorId(
             @PathVariable Long id,
@@ -77,19 +72,13 @@ public class SalaController {
         return ResponseEntity.ok(dto);
     }
 
-    // ── GET estado de sala ──
     @GetMapping("/{id}/estado")
-    public ResponseEntity<SalaDTO> getEstado(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<SalaDTO> getEstado(@PathVariable Long id) {
         Sala sala = salaService.obtenerSalaPorId(id);
-        // Buscar usuario por email
-        // Simplificado: retorna sala sin cartón personal si no está unido
         SalaDTO dto = juegoService.buildSalaDTO(sala, -1L);
         return ResponseEntity.ok(dto);
     }
 
-    // ── POST reclamar premio ──
     @PostMapping("/{salaId}/reclamar")
     public ResponseEntity<PremioGanado> reclamarPremio(
             @PathVariable Long salaId,
