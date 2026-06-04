@@ -23,7 +23,7 @@ export default function Admin() {
   const cargarSalas = async () => {
     try {
       const { data } = await api.get('/api/salas');
-      setSalas(data);
+      setSalas(Array.isArray(data) ? data : []);
     } catch (e) { console.error(e); }
   };
 
