@@ -47,6 +47,11 @@ public class Sala {
     @Column(name = "numeros_sorteados", length = 500)
     private String numerosSorteados = "";
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch =           FetchType.LAZY)
+    @Builder.Default
+    private List<Carton> cartones = new ArrayList<>();
+
     @OneToMany(mappedBy = "sala", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Carton> cartones = new ArrayList<>();

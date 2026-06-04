@@ -13,19 +13,23 @@ export default function Admin() {
   const [exito, setExito] = useState('');
 
   useEffect(() => {
-    if (usuario?.rol !== 'ADMIN') { navigate('/dashboard'); return; }
     cargarSalas();
     const interval = setInterval(cargarSalas, 3000);
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const cargarSalas = async () => {
     try {
       const { data } = await api.get('/api/salas');
-      setSalas(Array.isArray(data) ? data : []);
-    } catch (e) { 
-      console.error(e);
+      console.log('Salas recibidas:', data);
+      if (Array.isArray(data)) {
+        setSalas(data);
+      } else {
+        console.error('Data no es array:', data);
+        setSalas([]);
+      }
+    } catch (e) {
+      console.error('Error cargando salas:', e);
       setSalas([]);
     }
   };
