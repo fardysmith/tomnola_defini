@@ -24,7 +24,10 @@ export default function Admin() {
     try {
       const { data } = await api.get('/api/salas');
       setSalas(Array.isArray(data) ? data : []);
-    } catch (e) { console.error(e); }
+    } catch (e) { 
+      console.error(e);
+      setSalas([]);
+    }
   };
 
   const crearSala = async () => {
@@ -140,10 +143,10 @@ export default function Admin() {
                         <span style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '10px', background: bc.bg, color: bc.color, fontWeight: '600' }}>{sala.estado}</span>
                       </td>
                       <td style={{ fontSize: '13px', color: '#9B72CC', padding: '14px 24px', borderBottom: '0.5px solid #2C1654' }}>
-                        {sala.numerosSorteados ? sala.numerosSorteados.split(',').filter(Boolean).length : 0}/90
+                        {sala.numerosSorteadosList ? sala.numerosSorteadosList.length : 0}/90
                       </td>
                       <td style={{ fontSize: '12px', color: '#7C5AA8', padding: '14px 24px', borderBottom: '0.5px solid #2C1654' }}>
-                        {new Date(sala.createdAt).toLocaleTimeString()}
+                        {sala.createdAt ? new Date(sala.createdAt).toLocaleTimeString() : '—'}
                       </td>
                       <td style={{ padding: '14px 24px', borderBottom: '0.5px solid #2C1654' }}>
                         <button
