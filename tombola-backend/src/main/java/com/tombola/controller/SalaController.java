@@ -39,10 +39,26 @@ public class SalaController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Sala>> getAllSalas() {
-        return ResponseEntity.ok(salaService.obtenerTodasLasSalas());
-    }
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<List<Map<String, Object>>> getAllSalas() {
+    List<Map<String, Object>> resultado = salaService.obtenerTodasLasSalas().stream()
+            .map(s -> {
+                Map<String, Object> m = new HashMap<>();
+                m.put("id", s.getId());
+                m.put("nombre", s.getNombre());
+                m.put("codigo", s.getCodigo());
+                m.put("estado", s.getEstado().name());
+                m.put("maxJugadores", s.getMaxJugadores());
+                m.put("tiempoEsperaSegundos", s.getTiempoEsperaSegundos());
+                m.put("intervaloSorteoSegundos", s.getIntervaloSorteoSegundos());
+                m.put("createdAt", s.getCreatedAt());
+                m.put("numerosSorteados", s.getNumerosSorteados());
+                m.put("numerosSorteadosList", s.getNumerosSorteadosList());
+                return m;
+            })
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(resultado);
+}
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
