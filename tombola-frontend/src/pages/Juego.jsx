@@ -10,7 +10,7 @@ const PREMIO_LABELS = { AMBO: 'Ambo', TERNA: 'Terna', QUATERNA: 'Quaterna', QUIN
 export default function Juego() {
   const { salaId } = useParams();
   const navigate = useNavigate();
-  const { usuario } = useAuth();
+  const { logout } = useAuth();
 
   const [sala, setSala] = useState(null);
   const [carton, setCarton] = useState(null);
@@ -40,6 +40,7 @@ export default function Juego() {
       }
     };
     cargarSala();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salaId]);
 
   // Handlers WebSocket

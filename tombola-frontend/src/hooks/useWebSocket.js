@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+/* eslint-disable react-hooks/exhaustive-deps */
 
 const WS_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
