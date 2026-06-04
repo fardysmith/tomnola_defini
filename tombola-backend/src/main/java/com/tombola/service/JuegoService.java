@@ -66,6 +66,15 @@ public class JuegoService {
                         .username(usuario.getUsername())
                         .totalJugadores(jugadores)
                         .build());
+        // Enviar estado actual al jugador que se acaba de unir
+        Integer segundosRestantes = contadoresSegundos.getOrDefault(salaId, 0);
+        messagingTemplate.convertAndSend("/topic/sala/" + salaId + "/estado",
+        EstadoSalaMsg.builder()
+                .salaId(salaId)
+                .estado(sala.getEstado().name())
+                .segundosRestantes(segundosRestantes)
+                .jugadoresConectados(cartonRepository.findBySalaId(salaId).size() + 1)
+                .build());
 
         return buildSalaDTO(sala, usuario.getId());
     }
